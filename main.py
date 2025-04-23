@@ -58,4 +58,4 @@ def send_telegram_message(text):
 
 # ✅ 테스트 실행
 if __name__ == "__main__":
-    send_telegram_message("✅ 헤피 서버가 Render에서 실행됐어요!")
+    send_telegram_message("✅ Render 서버 실행 성공! 헤피 메시지 전송 테스트")
