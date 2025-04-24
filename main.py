@@ -59,3 +59,30 @@ def send_telegram_message(text):
 # ✅ 테스트 실행
 if __name__ == "__main__":
     send_telegram_message("✅ Render 서버 실행 성공! 헤피 메시지 전송 테스트")
+
+import os
+from telegram import Update
+from telegram.ext import Updater, MessageHandler, Filters, CallbackContext
+
+# 메시지 응답 함수
+def handle_message(update: Update, context: CallbackContext):
+    chat_id = update.effective_chat.id
+    text = update.message.text
+    if text:
+        context.bot.send_message(chat_id=chat_id, text=f"📩 받은 메시지: {text}")
+
+# 봇 실행
+def main():
+    TOKEN = os.getenv("TELEGRAM_TOKEN")
+    updater = Updater(token=TOKEN, use_context=True)
+    dispatcher = updater.dispatcher
+
+    # 메시지 핸들러 추가
+    handler = MessageHandler(Filters.text & (~Filters.command), handle_message)
+    dispatcher.add_handler(handler)
+
+    updater.start_polling()
+    updater.idle()
+
+if __name__ == "__main__":
+    main()
