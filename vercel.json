@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "routes": [
+    {
+      "src": "/api/analyze",
+      "dest": "api/analyze.py"
+    },
+    {
+      "src": "/api/calc_bid",
+      "dest": "api/calc_bid.py"
+    }
+    // 여기에 계속 추가 가능
+  ]
+}
