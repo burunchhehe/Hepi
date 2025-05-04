@@ -3,14 +3,16 @@ import os
 import json
 from googleapiclient.discovery import build
 
-def handler(request):
+def handler(request, context):
     try:
-        body = json.loads(request["body"])
+        body = json.loads(request.body.decode("utf-8"))
         user_text = body.get("text", "")
 
+        # API 키 불러오기
         openai.api_key = os.environ["OPENAI_API_KEY"]
         youtube_api_key = os.environ["YOUTUBE_API_KEY"]
 
+        # GPT 프롬프트 구성
         prompt = f"""
         사용자가 보낸 부동산 등기 내용입니다:
         \"\"\"{user_text}\"\"\"
@@ -26,6 +28,7 @@ def handler(request):
         )
         gpt_result = response.choices[0].message["content"]
 
+        # 유튜브 검색
         youtube = build("youtube", "v3", developerKey=youtube_api_key)
         search_response = youtube.search().list(
             q="권리분석 강의",
@@ -41,13 +44,21 @@ def handler(request):
             "statusCode": 200,
             "body": json.dumps({
                 "권리분석결과": gpt_result,
-                "추천강의": {"제목": video_title, "링크": video_url}
+                "추천강의": {
+                    "제목": video_title,
+                    "링크": video_url
+                }
             }),
-            "headers": {"Content-Type": "application/json"}
+            "headers": {
+                "Content-Type": "application/json"
+            }
         }
 
     except Exception as e:
         return {
             "statusCode": 500,
-            "body": json.dumps({"error": str(e)})
+            "body": json.dumps({"error": str(e)}),
+            "headers": {
+                "Content-Type": "application/json"
+            }
         }
